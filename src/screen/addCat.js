@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../component/Header'
 import { useDispatch } from 'react-redux'
-import getCatListAction from '../store/action/listAction'
+import { getCatListAction } from '../store/action/listAction'
 const AddCat = () => {
     let lists = JSON.parse(localStorage.getItem('list'))
     const dispatch = useDispatch()
@@ -15,6 +15,7 @@ const AddCat = () => {
     const [NameErrorMsg, setNameErrorMsg] = useState('')
     const [descErrorMsg, setDescErrorMsg] = useState('')
     const [data, setData] = useState(lists || [])
+    const { id } = useParams();
 
     const catNameHandler = (e) => {
         setCatName(e.target.value)
@@ -53,19 +54,42 @@ const AddCat = () => {
 
     const SubmitHandler = (e) => {
         e.preventDefault();
-        const catData = {
-            catName,
-            description,
-            breed,
-            id: (new Date().getTime()).toString(36)
+        if (!id) {
+            const catData = {
+                catName,
+                description,
+                breed,
+                id: (new Date().getTime()).toString(36)
+            }
+            setData([catData, ...data])
+            getCatListAction(dispatch, [catData, ...data])
         }
-        setData([catData, ...data])
-        getCatListAction(dispatch, [catData, ...data])
+        else {
+            let updatedData = data.map((curElem) => {
+                if (curElem.id === id) {
+                    return { ...curElem, catName, breed, description };
+                }
+                return curElem;
+            })
+            setData(updatedData);
+            getCatListAction(dispatch, updatedData);
+        }
         setCatName('')
         setDescription('')
         navigate('/')
     }
-    console.log(data);
+
+    useEffect(() => {
+        if (id) {
+            const Updatedata = data.find((curElem) => {
+                return curElem.id === id;
+            })
+            setCatName(Updatedata.catName)
+            setBreed(Updatedata.breed)
+            setDescription(Updatedata.description)
+        }
+
+    }, [id])
     return (
         <>
             <Header />
@@ -101,9 +125,15 @@ const AddCat = () => {
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button type="submit" disabled={catName.length < 3 || description.length < 4} className=" disabled:opacity-50 disabled:cursor-not-allowed inline-flex justify-center py-2 px-5 mx-3  border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Add
-                                    </button>
+                                    {
+                                        id ?
+                                            <button type="submit" disabled={catName.length < 3 || description.length < 4} className=" disabled:opacity-50 disabled:cursor-not-allowed inline-flex justify-center py-2 px-5 mx-3  border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                Update
+                                            </button>
+                                            : <button type="submit" disabled={catName.length < 3 || description.length < 4} className=" disabled:opacity-50 disabled:cursor-not-allowed inline-flex justify-center py-2 px-5 mx-3  border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                Add
+                                            </button>
+                                    }
                                     <Link to='/' type="submit" className="inline-flex justify-center py-2 px-5 border border-indigo-500 shadow-sm text-sm font-medium rounded-md text-indigo bg-transparent-600 hover:bg-transparent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         Cancel
                                     </Link>

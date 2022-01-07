@@ -13,6 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<CatList />} />
             <Route path="/addCat" element={<AddCat />} />
+            <Route path={`/addCat/:id`} element={<AddCat />} />
           </Routes>
         </BrowserRouter>
       </Provider>

@@ -1,22 +1,38 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Dialog from '../component/dialog'
 import Header from '../component/Header'
 const CatList = () => {
-    const { catList } = useSelector(state => state.catListReducer)
 
-    const [modalShow, setModalShow] = useState(false)
-    const [deleteId, setDeleteId] = useState(false)
-    const openModal = (id) => {
-        setModalShow(true)
-        setDeleteId(id);
+
+    const { catList } = useSelector(state => state.catListReducer)
+    const [list, setList] = useState([])
+    const [modalShow, setmodalShow] = useState(false)
+    const [deleteId, setDeleteId] = useState()
+
+    const showModal = (id) => {
+        setDeleteId(id)
+        setmodalShow(true)
     }
     const closeModal = () => {
-        setModalShow(false)
+        setmodalShow(false)
     }
     const deleteList = () => {
-        setModalShow(false)
+        const deletedItem = list.filter((curElem) => {
+            return curElem.id !== deleteId
+        })
+        setList(deletedItem);
+        localStorage.setItem("list", JSON.stringify(deletedItem))
+        setmodalShow(false)
     }
+
+    useEffect(() => {
+        setList(catList)
+    }, [catList])
+
+
+
     return (
         <>
             <Header />
@@ -38,27 +54,27 @@ const CatList = () => {
                     </div>
                 </div>
                 {
-                    catList.length < 1 ?
+                    list.length < 1 ?
                         <p className=' font-medium text-center'>No reacord found</p> :
-                        catList.map(({ catName, breed, description, id }) => (
-                            <div className='bg-white shadow-md border border-gray-100 hover:border-indigo-100 p-3 rounded-md mb-1  hover:text-white hover:bg-indigo-400 font-thin font-mono text-sm text-slate-700' key={id}>
+                        list.map((list) => (
+                            <div className='bg-white shadow-md border border-gray-100 hover:border-indigo-100 p-3 rounded-md mb-1  hover:text-white hover:bg-indigo-400 font-thin font-mono text-sm text-slate-700' key={list.id}>
                                 <div className="grid gap-4 grid-cols-5 justify-between items-center">
                                     <div>
-                                        <p >{catName}</p>
+                                        <p >{list.catName}</p>
                                     </div>
                                     <div >
-                                        <p >{breed}</p>
+                                        <p >{list.breed}</p>
                                     </div>
                                     <div className="col-span-2">
-                                        <p >{description}</p>
+                                        <p >{list.description}</p>
                                     </div>
                                     <div className="flex gap-3">
-                                        <div onClick={() => openModal(id)} className='cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-rose-600 text-white hover:bg-rose-500'>
+                                        <div onClick={() => showModal(list.id)} className='cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-rose-600 text-white hover:bg-rose-500'>
                                             <i className="far fa-trash-alt"></i>
                                         </div>
-                                        <div className='cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:bg-indigo-500'>
+                                        <Link to={`/addCat/${list.id}`} className='cursor-pointer w-8 h-8 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:bg-indigo-500'>
                                             <i className="far fa-edit"></i>
-                                        </div>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
