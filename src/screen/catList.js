@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Dialog from '../component/dialog'
 import Header from '../component/Header'
+import { setDataAction } from '../store/action/listAction'
 const CatList = () => {
 
 
@@ -10,6 +11,7 @@ const CatList = () => {
     const [list, setList] = useState([])
     const [modalShow, setmodalShow] = useState(false)
     const [deleteId, setDeleteId] = useState()
+    const dispatch = useDispatch()
 
     const showModal = (id) => {
         setDeleteId(id)
@@ -31,6 +33,12 @@ const CatList = () => {
         setList(catList)
     }, [catList])
 
+    useEffect(() => {
+        let localData = JSON.parse(localStorage.getItem('list'))
+        if (localData) {
+            setDataAction(dispatch, localData)
+        }
+    }, [])
 
 
     return (
