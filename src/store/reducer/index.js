@@ -1,9 +1,9 @@
-import { combineReducers } from "redux";
-import { catListReducer } from "./listReducer";
+// import { combineReducers } from "redux";
+// import { catListReducer } from "./listReducer";
 
-const rootReducers = combineReducers(
-    {
-        catListReducer: catListReducer
-    }
-)
-export default rootReducers;
+// const rootReducers = combineReducers(
+//     {
+//         catListReducer: catListReducer
+//     }
+// )
+// export default rootReducers;

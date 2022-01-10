@@ -6,3 +6,7 @@ export const getCatListAction = (dispatch, data) => {
         payload: data
     })
 }
+
+export const setLocalData = (data) => {
+    localStorage.setItem("list", JSON.stringify(data))
+}

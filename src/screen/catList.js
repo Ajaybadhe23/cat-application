@@ -6,7 +6,7 @@ import Header from '../component/Header'
 const CatList = () => {
 
 
-    const { catList } = useSelector(state => state.catListReducer)
+    const { catList } = useSelector(state => state)
     const [list, setList] = useState([])
     const [modalShow, setmodalShow] = useState(false)
     const [deleteId, setDeleteId] = useState()

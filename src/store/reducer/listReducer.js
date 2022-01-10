@@ -8,7 +8,6 @@ const initialState = {
 export const catListReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_LIST_SUCCESS:
-            localStorage.setItem("list", JSON.stringify(action.payload))
             return {
                 ...state,
                 catList: action.payload

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../component/Header'
 import { useDispatch } from 'react-redux'
-import { getCatListAction } from '../store/action/listAction'
+import { getCatListAction, setLocalData } from '../store/action/listAction'
 const AddCat = () => {
     let lists = JSON.parse(localStorage.getItem('list'))
     const dispatch = useDispatch()
@@ -16,6 +16,7 @@ const AddCat = () => {
     const [descErrorMsg, setDescErrorMsg] = useState('')
     const [data, setData] = useState(lists || [])
     const { id } = useParams();
+    const breedList = ['Maine Coon', 'Persian Cat', 'Siamese Cat']
 
     const catNameHandler = (e) => {
         setCatName(e.target.value)
@@ -61,8 +62,9 @@ const AddCat = () => {
                 breed,
                 id: (new Date().getTime()).toString(36)
             }
-            setData([catData, ...data])
+            setData()
             getCatListAction(dispatch, [catData, ...data])
+            setLocalData([catData, ...data])
         }
         else {
             let updatedData = data.map((curElem) => {
@@ -73,6 +75,7 @@ const AddCat = () => {
             })
             setData(updatedData);
             getCatListAction(dispatch, updatedData);
+            setLocalData(updatedData);
         }
         setCatName('')
         setDescription('')
@@ -109,10 +112,13 @@ const AddCat = () => {
                                         <div className="col-span-12 sm:col-span-3">
                                             <label htmlFor="country" className="block text-sm font-medium text-gray-700">Breed <sup>*</sup></label>
                                             <select id="country" value={breed} onChange={catBreedHandler} name="country" autoComplete="country-name" className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm  sm:text-sm focus:border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 '>
-                                                {/* <option defaultValue></option> */}
-                                                <option value='MaineCoon'>Maine Coon</option>
-                                                <option value='PersianCat'>Persian Cat</option>
-                                                <option value='SiameseCat'>Siamese Cat</option>
+                                                {
+                                                    breedList.map((breed) => {
+                                                        return (
+                                                            <option value={breed}>{breed}</option>
+                                                        )
+                                                    })
+                                                }
                                             </select>
                                         </div>
                                         <div className="col-span-12 sm:col-span-6">

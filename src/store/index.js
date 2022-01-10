@@ -1,10 +1,11 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import rootReducers from './reducer';
+// import rootReducers from './reducer';
+import { catListReducer } from './reducer/listReducer';
 
 
 const store = createStore(
-    rootReducers,
+    catListReducer,
     applyMiddleware(thunk)
 )
 
